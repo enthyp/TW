@@ -9,15 +9,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Experiment {
     private AtomicBoolean working = new AtomicBoolean(false);
     private List<Worker> workers;
-    private Logger logger;
 
 
-    public Experiment(List<Worker> workers, Logger logger) {
-        this.logger = logger;
+    public Experiment(List<Worker> workers) {
         this.workers = workers;
         for (Worker w : this.workers) {
             w.setWorking(working);
-            w.setLogger(logger);
         }
     }
 
@@ -30,14 +27,12 @@ public class Experiment {
 
     public void stop() {
         working.set(false);
-
-            for (Worker w : workers) {
-                try {
-                    w.interrupt();
-                    w.join();
-                }
-                catch (InterruptedException e) { // ... }
+        for (Worker w : workers) {
+            try {
+                w.interrupt();
+                w.join();
             }
+            catch (InterruptedException e) { /* ... */ }
         }
     }
 }

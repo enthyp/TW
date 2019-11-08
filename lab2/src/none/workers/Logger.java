@@ -1,9 +1,9 @@
-package none.experiments;
+package none.workers;
 
 import none.buffers.BufferType;
-import none.workers.SamplingType;
-import none.workers.WorkerType;
+import none.experiments.Experiment;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.FileHandler;
@@ -18,14 +18,18 @@ public class Logger {
         java.util.logging.Logger logger =
                 java.util.logging.Logger.getLogger(Experiment.class.getName());
 
+        File logDir = new File("./logs/");
+        if( !(logDir.exists()) )
+            logDir.mkdir();
+
         try {
             FileHandler fh = new FileHandler("logs/threads.csv");
             fh.setFormatter(new SimpleFormatter() {
-                private static final String format = "%1$d,%2$s,%3$d,%4$b,%5$s,%6$d";
+                private static final String format = "%1$s\n";
 
                 @Override
                 public synchronized String format(LogRecord lr) {
-                    return String.format(format, lr.getParameters());
+                    return String.format(format, lr.getMessage());
                 }
             });
             fh.setLevel(Level.ALL);
@@ -60,8 +64,8 @@ public class Logger {
         boolean isFair = (bufferType == BufferType.FAIR);
         String randomization = samplingType.name();
 
-        Object[] params = {bufferSize, consProd, units, counts, isFair, randomization, time};
-        lr.setParameters(params);
-        logger.log(lr);
+        String format = "%1$d,%2$s,%3$d,%4$s,%5$b,%6$s,%7$d\n";
+        String msg = String.format(format, bufferSize, consProd, units, counts, isFair, randomization, time);
+        logger.log(Level.ALL, msg);
     }
 }

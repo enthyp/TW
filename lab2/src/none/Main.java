@@ -20,15 +20,17 @@ public class Main {
             builder.setup(config);
             Experiment experiment = builder.build();
             experiment.run();
+            System.out.println(config);
 
             try {
-                Thread.sleep(1);
+                Thread.sleep(1000, 0);
             } catch (InterruptedException e ) {
                 System.out.println("Exiting abruptly.");
                 System.exit(1);
             }
 
             experiment.stop();
+            System.out.println("Done.");
         }
     }
 }

@@ -3,7 +3,7 @@ package none.workers;
 import java.util.Random;
 
 public class Sampler {
-    private Random rand = new Random(0);
+    private Random rand = new Random();
     private double lambda = 1.;
 
     public int sample(int max, SamplingType type) {

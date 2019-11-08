@@ -31,28 +31,28 @@ public class SimpleBuilder implements IBuilder {
 
         IBuffer buffer;
         if (bufferType == BufferType.FAIR) {
-            buffer = new FairBuffer(bufferSize);
+            buffer = new FairBuffer(bufferSize / 2);
         } else if (bufferType == BufferType.NAIVE) {
-            buffer = new NaiveBuffer(bufferSize);
+            buffer = new NaiveBuffer(bufferSize / 2);
         } else {
             System.out.println("Unknown buffer type, defaulting to naive...");
             buffer = new FairBuffer(bufferSize);
         }
 
+        Logger logger = new Logger();
+        logger.setup(bufferSize, bufferType, samplingType, workerCounts);
+
         for (Map.Entry<WorkerType, Integer> kv : workerCounts.entrySet()) {
             for (int i = 0; i < kv.getValue(); i++) {
                 if (kv.getKey() == WorkerType.PRODUCER) {
-                    workers.add(new Producer(buffer, samplingType));
+                    workers.add(new Producer(buffer, samplingType, logger));
                 } else {
-                    workers.add(new Consumer(buffer, samplingType));
+                    workers.add(new Consumer(buffer, samplingType, logger));
                 }
             }
         }
 
-        Logger logger = new Logger();
-        logger.setup(bufferSize, bufferType, samplingType, workerCounts);
-
-        return new Experiment(workers, logger);
+        return new Experiment(workers);
     }
 
     public void setBufferSize(int bufferSize) {

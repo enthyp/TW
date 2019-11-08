@@ -21,20 +21,20 @@ public class SimpleConfigFactory implements IConfigFactory {
         List<List<? extends ConfigElement>> possibilities = new ArrayList<List<? extends ConfigElement>>() {{
             add(bufferSizes);
             add(bufferTypes);
-            add(loopCounts);
-            add(workerCounts);
             add(samplingTypes);
+            add(workerCounts);
         }};
 
         for (List<? extends ConfigElement> list : possibilities) {
+            List<IConfiguration> enhancedConfigs = new ArrayList<>();
             for (IConfiguration config : allConfigs) {
-                config.accept(list.get(0));
-                for (int i = 1; i < list.size(); i++) {
+                for (int i = 0; i < list.size(); i++) {
                     IConfiguration cConfig = new SimpleConfiguration((SimpleConfiguration) config);
                     cConfig.accept(list.get(i));
-                    allConfigs.add(cConfig);
+                    enhancedConfigs.add(cConfig);
                 }
             }
+            allConfigs = enhancedConfigs;
         }
 
         return allConfigs;
@@ -48,10 +48,6 @@ public class SimpleConfigFactory implements IConfigFactory {
     private static List<BufferType> bufferTypes = new ArrayList<BufferType>() {{
         add(new BufferType(none.buffers.BufferType.NAIVE));
         //add(new BufferType(none.buffers.BufferType.FAIR));
-    }};
-
-    private static List<LoopCount> loopCounts = new ArrayList<LoopCount>() {{
-        add(new LoopCount(10));
     }};
 
     private static List<WorkerCount> workerCounts = new ArrayList<WorkerCount>() {{

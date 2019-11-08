@@ -14,7 +14,6 @@ public class SimpleConfiguration implements IConfiguration {
     private BufferType bufferType;
     private SamplingType samplingVariant;
     private Map<WorkerType, Integer> workerCount;
-    private int loopCount;
 
     public SimpleConfiguration() {};
 
@@ -23,7 +22,6 @@ public class SimpleConfiguration implements IConfiguration {
         bufferType = other.bufferType;
         samplingVariant = other.samplingVariant;
         workerCount = other.workerCount;
-        loopCount = other.loopCount;
     }
 
     @Override
@@ -32,7 +30,6 @@ public class SimpleConfiguration implements IConfiguration {
         b.setBufferType(bufferType);
         b.setSamplingType(samplingVariant);
         b.setWorkerCounts(workerCount);
-        b.setLoopCount(loopCount);
     }
 
     @Override
@@ -56,7 +53,13 @@ public class SimpleConfiguration implements IConfiguration {
         this.workerCount = workerCount;
     }
 
-    public void setLoopCount(int loopCount) {
-        this.loopCount = loopCount;
+    @Override
+    public String toString() {
+        return "SimpleConfiguration{" +
+                "bufferSize=" + bufferSize +
+                ", bufferType=" + bufferType +
+                ", samplingVariant=" + samplingVariant +
+                ", workerCount=" + workerCount +
+                '}';
     }
 }

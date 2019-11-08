@@ -16,6 +16,7 @@ public class NaiveBuffer implements IBuffer {
         }
 
         this.size += count;
+        notifyAll();
     }
 
     public synchronized void take(int count) throws InterruptedException {
@@ -24,6 +25,7 @@ public class NaiveBuffer implements IBuffer {
         }
 
         this.size -= count;
+        notifyAll();
     }
 
     public int getLength() {
