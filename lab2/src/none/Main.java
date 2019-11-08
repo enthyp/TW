@@ -23,7 +23,7 @@ public class Main {
             System.out.println(config);
 
             try {
-                Thread.sleep(1000, 0);
+                Thread.sleep(20000, 0);
             } catch (InterruptedException e ) {
                 System.out.println("Exiting abruptly.");
                 System.exit(1);

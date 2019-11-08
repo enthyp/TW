@@ -46,8 +46,8 @@ public class SimpleConfigFactory implements IConfigFactory {
     }};
 
     private static List<BufferType> bufferTypes = new ArrayList<BufferType>() {{
-        add(new BufferType(none.buffers.BufferType.NAIVE));
-        //add(new BufferType(none.buffers.BufferType.FAIR));
+        //add(new BufferType(none.buffers.BufferType.NAIVE));
+        add(new BufferType(none.buffers.BufferType.FAIR));
     }};
 
     private static List<WorkerCount> workerCounts = new ArrayList<WorkerCount>() {{

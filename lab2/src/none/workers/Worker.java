@@ -27,11 +27,9 @@ public abstract class Worker extends Thread {
     public void run() {
         while (working.get()) {
             int cnt = sampler.sample(max, type);
-            try {
-                engage(cnt);
-            } catch (InterruptedException e) { /* Just exit. */ }
+            engage(cnt);
         }
     }
 
-    public abstract void engage(int count) throws InterruptedException;
+    public abstract void engage(int count);
 }

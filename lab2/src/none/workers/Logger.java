@@ -3,7 +3,6 @@ package none.workers;
 import none.buffers.BufferType;
 import none.experiments.Experiment;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.FileHandler;
@@ -18,18 +17,12 @@ public class Logger {
         java.util.logging.Logger logger =
                 java.util.logging.Logger.getLogger(Experiment.class.getName());
 
-        File logDir = new File("./logs/");
-        if( !(logDir.exists()) )
-            logDir.mkdir();
-
         try {
-            FileHandler fh = new FileHandler("logs/threads.csv");
+            FileHandler fh = new FileHandler("/home/jlanecki/AGH/TW/lab2/logs/threads_fair.csv", true);
             fh.setFormatter(new SimpleFormatter() {
-                private static final String format = "%1$s\n";
-
                 @Override
                 public synchronized String format(LogRecord lr) {
-                    return String.format(format, lr.getMessage());
+                    return lr.getMessage();
                 }
             });
             fh.setLevel(Level.ALL);
@@ -39,6 +32,7 @@ public class Logger {
             System.exit(1);
         }
 
+        logger.setUseParentHandlers(false);
         return logger;
     }
 
@@ -66,6 +60,6 @@ public class Logger {
 
         String format = "%1$d,%2$s,%3$d,%4$s,%5$b,%6$s,%7$d\n";
         String msg = String.format(format, bufferSize, consProd, units, counts, isFair, randomization, time);
-        logger.log(Level.ALL, msg);
+        logger.info(msg);
     }
 }

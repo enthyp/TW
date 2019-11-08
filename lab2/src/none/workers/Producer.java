@@ -9,10 +9,14 @@ public class Producer extends Worker {
     }
 
     @Override
-    public void engage(int count) throws InterruptedException {
-        long startTime = System.nanoTime();
-        buffer.put(count);
-        long estimatedTime = System.nanoTime() - startTime;
-        logger.log(WorkerType.PRODUCER, count, estimatedTime);
+    public void engage(int count) {
+        try {
+            long startTime = System.nanoTime();
+            buffer.put(count);
+            long estimatedTime = System.nanoTime() - startTime;
+            logger.log(WorkerType.PRODUCER, count, estimatedTime);
+        } catch (InterruptedException e) {
+            // Just quit, do not log.
+        }
     }
 }
