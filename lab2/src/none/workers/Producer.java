@@ -4,14 +4,12 @@ import none.buffers.IBuffer;
 
 public class Producer extends Worker {
 
-    private SamplingType type;
-
-    public Producer(int n, IBuffer buffer, SamplingType type) {
-        super(n, buffer);
-        this.type = type;
+    public Producer(IBuffer buffer, SamplingType type) {
+        super(buffer, type);
     }
 
-    public void run() {
-
+    @Override
+    public void engage(int count) throws InterruptedException {
+        buffer.put(count);
     }
 }

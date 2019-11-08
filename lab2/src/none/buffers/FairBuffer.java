@@ -21,6 +21,6 @@ public class FairBuffer implements IBuffer {
 
     @Override
     public int getLength() {
-        return 0;
+        return this.length;
     }
 }

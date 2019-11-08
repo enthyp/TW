@@ -1,18 +1,16 @@
 package none.workers;
 
+
 import none.buffers.IBuffer;
 
 public class Consumer extends Worker {
 
-    private SamplingType type;
-
-    public Consumer(int n, IBuffer buffer, SamplingType type) {
-        super(n, buffer);
-        this.type = type;
+    public Consumer(IBuffer buffer, SamplingType type) {
+        super(buffer, type);
     }
 
-
-    public void run() {
-
+    @Override
+    public void engage(int count) throws InterruptedException {
+        buffer.take(count);
     }
 }

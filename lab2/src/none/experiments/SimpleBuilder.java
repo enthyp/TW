@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+// TODO: exception handling in general!!!
 
 public class SimpleBuilder implements IBuilder {
 
@@ -18,7 +19,6 @@ public class SimpleBuilder implements IBuilder {
     private BufferType bufferType;
     private SamplingType samplingType;
     private Map<WorkerType, Integer> workerCounts;
-    private int loopCount;
 
     @Override
     public void setup(IConfiguration config) {
@@ -42,14 +42,17 @@ public class SimpleBuilder implements IBuilder {
         for (Map.Entry<WorkerType, Integer> kv : workerCounts.entrySet()) {
             for (int i = 0; i < kv.getValue(); i++) {
                 if (kv.getKey() == WorkerType.PRODUCER) {
-                    workers.add(new Producer(loopCount, buffer, samplingType));
+                    workers.add(new Producer(buffer, samplingType));
                 } else {
-                    workers.add(new Consumer(loopCount, buffer, samplingType));
+                    workers.add(new Consumer(buffer, samplingType));
                 }
             }
         }
 
-        return new Experiment(workers);
+        Logger logger = new Logger();
+        logger.setup(bufferSize, bufferType, samplingType, workerCounts);
+
+        return new Experiment(workers, logger);
     }
 
     public void setBufferSize(int bufferSize) {
@@ -66,9 +69,5 @@ public class SimpleBuilder implements IBuilder {
 
     public void setWorkerCounts(Map<WorkerType, Integer> workerCounts) {
         this.workerCounts = workerCounts;
-    }
-
-    public void setLoopCount(int loopCount) {
-        this.loopCount = loopCount;
     }
 }

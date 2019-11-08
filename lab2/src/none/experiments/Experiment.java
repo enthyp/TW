@@ -3,25 +3,41 @@ package none.experiments;
 import none.workers.Worker;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class Experiment {
+    private AtomicBoolean working = new AtomicBoolean(false);
     private List<Worker> workers;
+    private Logger logger;
 
-    public Experiment(List<Worker> workers) {
+
+    public Experiment(List<Worker> workers, Logger logger) {
+        this.logger = logger;
         this.workers = workers;
+        for (Worker w : this.workers) {
+            w.setWorking(working);
+            w.setLogger(logger);
+        }
     }
 
     public void run() {
+        working.set(true);
         for (Worker w : workers) {
             w.start();
         }
+    }
 
-        try {
+    public void stop() {
+        working.set(false);
+
             for (Worker w : workers) {
-                w.join();
+                try {
+                    w.interrupt();
+                    w.join();
+                }
+                catch (InterruptedException e) { // ... }
             }
-        } catch (InterruptedException e) {
-            System.out.println("Interrupted, terminating immediately.");
         }
     }
 }
