@@ -29,6 +29,8 @@ public class FairBuffer implements IBuffer {
                 restProducers.await();
             }
 
+            canProduce = false;
+
             while (length - size < count) {
                 firstProducer.await();
             }
@@ -50,6 +52,8 @@ public class FairBuffer implements IBuffer {
             while (!canConsume) {
                 restConsumers.await();
             }
+
+            canConsume = false;
 
             while (size < count) {
                 firstProducer.await();
