@@ -1,0 +1,6 @@
+abcd
+a d 
+d a
+b c
+c b 
+baadcb
