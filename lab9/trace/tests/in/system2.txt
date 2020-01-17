@@ -7,4 +7,3 @@ c d
 d c
 c f
 f c
-acdcfbbe

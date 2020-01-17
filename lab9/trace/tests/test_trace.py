@@ -1,15 +1,17 @@
 import os
 import logging
 import pytest
-from traces import read_input, trace
+from traces import System, trace
 
 
-params = [('input1.txt', 'baadbc')]
+params = [
+    ('system1.txt', 'baadbc'),
+    ('system2.txt', 'acdcfbbe')
+]
 
-@pytest.mark.parametrize('in_file, target_trace', params)
-def test_trace(in_dir, in_file, target_trace):
-    input = os.path.join(in_dir, in_file)
-    alphabet, independence_relation, word = read_input(input)
-
-    assert trace(word, independence_relation) == target_trace
+@pytest.mark.parametrize('in_file, execution', params)
+def test_trace(in_dir, in_file, execution):
+    input_path = os.path.join(in_dir, in_file)
+    system = System(input_path)
+    logging.info(trace(execution, system))
 

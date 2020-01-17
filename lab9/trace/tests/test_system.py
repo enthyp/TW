@@ -6,54 +6,24 @@ from traces import System
 
 
 target_dep1 = {
-    ('a', 'a'), 
-    ('a', 'b'), 
-    ('a', 'c'), 
-    ('b', 'a'),     
-    ('b', 'b'), 
-    ('b', 'd'), 
-    ('c', 'a'), 
-    ('c', 'c'), 
-    ('c', 'd'),
-    ('d', 'b'),
-    ('d', 'c'),
-    ('d', 'd')
+    'a': {'a', 'b', 'c'}, 
+    'b': {'a', 'b', 'd'},
+    'c': {'a', 'c', 'd'},
+    'd': {'b', 'c', 'd'}     
 }
 
 target_dep2 = {
-    ('a', 'a'),
-    ('a', 'b'),
-    ('a', 'c'),
-    ('a', 'e'),
-    ('a', 'f'),
-    ('b', 'a'),
-    ('b', 'b'),
-    ('b', 'c'),
-    ('b', 'd'),
-    ('b', 'f'),
-    ('c', 'a'),
-    ('c', 'b'),
-    ('c', 'c'),
-    ('c', 'e'),
-    ('d', 'b'),
-    ('d', 'd'),
-    ('d', 'e'),
-    ('d', 'f'),
-    ('e', 'a'),
-    ('e', 'c'),
-    ('e', 'd'),
-    ('e', 'e'),
-    ('e', 'f'),
-    ('f', 'a'),
-    ('f', 'b'),
-    ('f', 'd'),
-    ('f', 'e'),
-    ('f', 'f')
+    'a': {'a', 'b', 'c', 'e', 'f'},
+    'b': {'a', 'b', 'c', 'd', 'f'},
+    'c': {'a', 'b', 'c', 'e'},
+    'd': {'b', 'd', 'e', 'f'},
+    'e': {'a', 'c', 'd', 'e', 'f'},
+    'f': {'a', 'b', 'd', 'e', 'f'}
 }
 
-inputs = ['input1.txt', 'input2.txt']
+systems = ['system1.txt', 'system2.txt']
 dep_rel_targets = [target_dep1, target_dep2]
-params = zip(inputs, dep_rel_targets)
+params = zip(systems, dep_rel_targets)
 
 @pytest.mark.parametrize('in_file, target_dep', params)
 def test_system(in_dir, in_file, target_dep):

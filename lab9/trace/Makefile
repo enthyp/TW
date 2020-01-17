@@ -12,5 +12,5 @@ test:
 
 .PHONY: clean
 clean:
-	@rm -rf $(PACKAGE).egg-info $(PACKAGE_DIR)/__pycache__ $(TEST_DIR)/__pycache__ $(TEST_DIR)/*.{txt,pdf}
+	@rm -rf $(PACKAGE).egg-info $(PACKAGE_DIR)/__pycache__ $(TEST_DIR)/__pycache__ $(TEST_DIR)/*.txt $(TEST_DIR)/*.pdf
 
