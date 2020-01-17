@@ -14,11 +14,7 @@ def dependence_relation(alphabet, independence_pairs):
 class MinDepGraph:
     def __init__(self, alphabet, independence_relation, word):
         self.viz_graph = Graph('dep_graph', node_attr={'style': 'filled'})
-        self.viz_graph.attr(
-            layout='neato',
-            overlap='prism',
-            overlap_scaling='10'
-        )
+        self.viz_graph.attr(rankdir='LR')
         self._prepare(alphabet, independence_relation, word)
 
     def _prepare(self, alphabet, independence_relation, word):

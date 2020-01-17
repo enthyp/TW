@@ -46,3 +46,8 @@ def fnf(word, alphabet, independence_relation):
     blocks = ['(' + b + ')' for b in blocks]
     return ''.join(blocks)
 
+
+def from_graph(dot_graph):
+    pass
+
+
