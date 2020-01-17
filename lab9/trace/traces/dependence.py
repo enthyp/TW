@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from graphviz import Digraph
 
 
@@ -53,13 +53,7 @@ class MinDependenceGraph:
         self.nodes = [None] * len(word)
         dep_rel = system.dep_relation
         min_set = set()
- 
-        def dfs(node, visited):
-            visited.add(node.identifier)
-            for n in node.neighbors:
-                if n.identifier not in visited:
-                    dfs(n, visited)
-       
+    
         for i in range(len(word) - 1, -1, -1):
             cur_l = word[i]
             new_node = Node(cur_l, i) 
@@ -67,12 +61,12 @@ class MinDependenceGraph:
 
             visited = set()   
             for j in range(i + 1, len(word)):
-                if j in visited or word[j] not in dep_rel[cur_l]:
+                if self.nodes[j] in visited or word[j] not in dep_rel[cur_l]:
                     continue
 
                 # Letter not visited and dependent - DFS from it.
                 new_node.conn(self.nodes[j])
-                dfs(self.nodes[j], visited)
+                self._dfs(self.nodes[j], visited)
  
     def _visualize(self):
         for node in self.nodes:
@@ -87,10 +81,37 @@ class MinDependenceGraph:
             self._visualize()
         self.viz_graph.render(filename, view=show)
 
-    def fnf(self):
-        # Topo sort first to find the first block of FNF.
-        
+    @staticmethod
+    def _dfs(node, visited):
+        visited.add(node)
+        for n in node.neighbors:
+            if n not in visited:
+                dfs(n, visited)
 
+    def fnf(self):
         # BFS and merge layers to form all FNF blocks.
-        pass
+        roots = set(self.nodes)
+        for n in self.nodes:
+            roots -= n.neighbors
+
+        q = deque(roots)        
+        layers = {r: 1 for r in roots}
+        no_layers = 1
+        
+        while q:
+            cur_node = q.popleft()
+            layer = layers[cur_node]            
+            no_layers = max(no_layers, layer)
+
+            for node in cur_node.neighbors:
+                if node not in layers or layers[node] < layer + 1:
+                    layers[node] = layer + 1
+                    q.append(node)
+
+        blocks = [[] for _ in no_layers]             
+        for node, layer in layers.items():
+            blocks[layer - 1].append(node.label)
+     
+        blocks = ['(' + ''.join(sorted(b)) + ')' for b in blocks]
+        return ''.join(blocks)
 
