@@ -11,13 +11,24 @@ def dependence_relation(alphabet, independence_pairs):
     return [r for r in full_relation if r not in independence_pairs]
 
 
+class Node:
+    def __init__(self, letter, identifier):
+        self.label = letter
+        self.id = '{}{}'.format(letter, identifier)
+        self.neighbors = set()
+
+
 class MinDepGraph:
     def __init__(self, alphabet, independence_relation, word):
-        self.viz_graph = Graph('dep_graph', node_attr={'style': 'filled'})
-        self.viz_graph.attr(rankdir='LR')
+        self.nodes = []
         self._prepare(alphabet, independence_relation, word)
 
+        self.visualized = False
+        self.viz_graph = Graph('dep_graph', node_attr={'style': 'filled'})
+        self.viz_graph.attr(rankdir='LR')
+
     def _prepare(self, alphabet, independence_relation, word):
+        # Get dependence relation first.
         dep_map = {l: set(alphabet) for l in alphabet}
         for a, b in independence_relation:
             dep_map[a].discard(b)
@@ -45,6 +56,13 @@ class MinDepGraph:
 
             min_set[l].add(l_count[l])
 
+    def _visualize(self):
+        ### 
+
+        self.visualized = True
+
     def render(self, filename, show=True):
+        if not self.visualized:
+            self._visualize()
         self.viz_graph.render(filename, view=show)
  

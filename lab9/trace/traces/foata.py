@@ -48,6 +48,6 @@ def fnf(word, alphabet, independence_relation):
 
 
 def from_graph(dot_graph):
-    pass
+    pass    
 
 

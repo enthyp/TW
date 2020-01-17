@@ -27,3 +27,5 @@ def trace(word, independence_relation):
 
     return ''.join(trace)
 
+
+# TODO: we actually want ALL trace elements!
