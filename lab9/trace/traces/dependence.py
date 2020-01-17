@@ -81,12 +81,11 @@ class MinDependenceGraph:
             self._visualize()
         self.viz_graph.render(filename, view=show)
 
-    @staticmethod
-    def _dfs(node, visited):
+    def _dfs(self, node, visited):
         visited.add(node)
         for n in node.neighbors:
             if n not in visited:
-                dfs(n, visited)
+                self._dfs(n, visited)
 
     def fnf(self):
         # BFS and merge layers to form all FNF blocks.
@@ -108,10 +107,10 @@ class MinDependenceGraph:
                     layers[node] = layer + 1
                     q.append(node)
 
-        blocks = [[] for _ in no_layers]             
+        blocks = [[] for _ in range(no_layers)]
         for node, layer in layers.items():
             blocks[layer - 1].append(node.label)
      
-        blocks = ['(' + ''.join(sorted(b)) + ')' for b in blocks]
+        blocks = ['(' + ''.join(sorted(b)) + ')' for b in blocks if b]
         return ''.join(blocks)
 
