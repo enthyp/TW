@@ -1,22 +1,18 @@
 import os
 import logging
 import pytest
-from traces import read_input, dependence_relation, MinDepGraph
+from traces import MinDependenceGraph, System
+
+inputs = [
+    ('system1.txt', 'baadcb'),
+    ('system2.txt', 'acdcfbbe')
+]
 
 
-@pytest.mark.parametrize('in_file, target_dep', zip(inputs, dependence_rel_targets))
-def test_dependence(in_dir, in_file, target_dep):
-    input = os.path.join(in_dir, in_file)
-    alphabet, independence_relation, _ = read_input(input)
-    dep = dependence_relation(alphabet, independence_relation)
-
-    assert set(dep) == target_dep
-
-
-@pytest.mark.parametrize('in_file', inputs)
-def test_graph(in_dir, in_file):
-    input = os.path.join(in_dir, in_file)
-    alphabet, independence_relation, word = read_input(input)
-    graph = MinDepGraph(alphabet, independence_relation, word)   
+@pytest.mark.parametrize('in_file, word', inputs)
+def test_graph(in_dir, in_file, word):
+    input_path = os.path.join(in_dir, in_file)
+    system = System(input_path)
+    graph = MinDependenceGraph(word, system)   
     graph.render('graph' + in_file, show=True)
 

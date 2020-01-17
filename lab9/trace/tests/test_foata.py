@@ -1,18 +1,18 @@
 import os
 import logging
 import pytest
-from traces import read_input, fnf
+from traces import System, fnf
 
 
 params = [
-    ('input1.txt', '(b)(ad)(a)(bc)'),
-    ('input2.txt', '(ad)(cf)(c)(be)(b)')
+    ('system1.txt', 'baadcb', '(b)(ad)(a)(bc)'),
+    ('system2.txt', 'acdcfbbe', '(ad)(cf)(c)(be)(b)')
 ]
 
-@pytest.mark.parametrize('in_file, target_form', params)
-def test_foata(in_dir, in_file, target_form):
-    input = os.path.join(in_dir, in_file)
-    alphabet, independence_relation, word = read_input(input)
+@pytest.mark.parametrize('in_file, word, target_form', params)
+def test_foata(in_dir, in_file, word, target_form):
+    input_path = os.path.join(in_dir, in_file)
+    system = System(input_path)
 
-    assert fnf(word, alphabet, independence_relation) == target_form
+    assert fnf(word, system) == target_form
 

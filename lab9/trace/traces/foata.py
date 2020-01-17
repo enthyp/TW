@@ -1,17 +1,15 @@
-def fnf(word, alphabet, independence_relation):
+def fnf(word, system):
     # Find all dependent letters for each.
-    dep_map = {l: set(alphabet) - {l} for l in alphabet}
-    for a, b in independence_relation:
-        dep_map[a].discard(b)
-        dep_map[b].discard(a)
+    alphabet = system.alphabet
+    dep_rel = system.dep_relation
 
     marker = 0
     stacks = {l: [] for l in alphabet}
-    
+ 
     # Fill stacks.
     for l in word[::-1]:
         stacks[l].append(l)
-        for dep in dep_map[l]:
+        for dep in dep_rel[l] - {l}:
             stacks[dep].append(marker)
 
     # Get normal form blocks.
@@ -29,14 +27,9 @@ def fnf(word, alphabet, independence_relation):
                     
         if empty: 
             break                
-
-        if not block:
-            for l in alphabet:
-                if stacks[l]:
-                    stacks[l].pop()   
         
         for l in block:
-            for d in dep_map[l]:
+            for d in dep_rel[l] - {l}:
                 if stacks[d] and stacks[d][-1] == marker:
                     stacks[d].pop()
 

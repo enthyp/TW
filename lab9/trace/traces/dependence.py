@@ -1,63 +1,84 @@
-import logging
-from itertools import product 
 from collections import defaultdict
-from graphviz import Graph
-
-
-def dependence_relation(alphabet, independence_pairs):
-    independence_pairs = set(independence_pairs)
-    full_relation = list(product(alphabet, alphabet))
-
-    return [r for r in full_relation if r not in independence_pairs]
+from graphviz import Digraph
 
 
 class Node:
     def __init__(self, letter, identifier):
-        self.label = letter
-        self.id = '{}{}'.format(letter, identifier)
+        self.letter = letter
+        self.identifier = identifier
         self.neighbors = set()
 
+    @property
+    def id(self):   
+         return '{}{}'.format(self.label, self.identifier) 
 
-class MinDepGraph:
-    def __init__(self, alphabet, independence_relation, word):
+    @property
+    def label(self):
+        return self.letter
+
+    def conn(self, other):
+        self.neighbors.add(other)
+
+
+class MinDependenceGraph:
+    def __init__(self, word, system, hasse=False):
         self.nodes = []
-        self._prepare(alphabet, independence_relation, word)
+        if hasse:
+            self._prepare_hasse(word, system)
+        else:
+            self._prepare_mindep(word, system)
 
         self.visualized = False
-        self.viz_graph = Graph('dep_graph', node_attr={'style': 'filled'})
+        self.viz_graph = Digraph('dep_graph', node_attr={'style': 'filled'})
         self.viz_graph.attr(rankdir='LR')
 
-    def _prepare(self, alphabet, independence_relation, word):
-        # Get dependence relation first.
-        dep_map = {l: set(alphabet) for l in alphabet}
-        for a, b in independence_relation:
-            dep_map[a].discard(b)
-            dep_map[b].discard(a)
+    def _prepare_hasse(self, word, system):
+        dep_rel = system.dep_relation
+        min_set = set()
         
-        min_set = defaultdict(set)
-        l_count = defaultdict(int)
-        
-        for l in word[::-1]:
-            l_count[l] += 1
-            node_name = '{}{}'.format(l, l_count[l])
-            self.viz_graph.node(node_name)
+        for i, l in enumerate(word[::-1]):
+            new_node = Node(l, i) 
+            
+            tb_removed = set() 
+            for node in min_set:
+                if node.label in dep_rel[l]:
+                    new_node.conn(node)
+                    tb_removed.add(node)
+           
+            min_set -= tb_removed           
+            self.nodes.append(new_node)
+            min_set.add(new_node)
 
-            deps = set()        
-            for dep, nums in min_set.items():
-                if dep in dep_map[l]:
-                    logging.debug('from: ' + node_name) 
-                    for n in nums:
-                        d_name = '{}{}'.format(dep, n)
-                        logging.debug('to: ' + d_name)
-                        self.viz_graph.edge(node_name, d_name)
-                    deps.add(dep)
-            for d in deps:
-                del min_set[d]            
+    def _prepare_mindep(self, word, system):
+        self.nodes = [None] * len(word)
+        dep_rel = system.dep_relation
+        min_set = set()
+ 
+        def dfs(node, visited):
+            visited.add(node.identifier)
+            for n in node.neighbors:
+                if n.identifier not in visited:
+                    dfs(n, visited)
+       
+        for i in range(len(word) - 1, -1, -1):
+            cur_l = word[i]
+            new_node = Node(cur_l, i) 
+            self.nodes[i] = new_node
 
-            min_set[l].add(l_count[l])
+            visited = set()   
+            for j in range(i + 1, len(word)):
+                if j in visited or word[j] not in dep_rel[cur_l]:
+                    continue
 
+                # Letter not visited and dependent - DFS from it.
+                new_node.conn(self.nodes[j])
+                dfs(self.nodes[j], visited)
+ 
     def _visualize(self):
-        ### 
+        for node in self.nodes:
+            self.viz_graph.node(node.id, label=node.label)
+            for neighbor in node.neighbors:
+                self.viz_graph.edge(node.id, neighbor.id)
 
         self.visualized = True
 
@@ -65,4 +86,11 @@ class MinDepGraph:
         if not self.visualized:
             self._visualize()
         self.viz_graph.render(filename, view=show)
- 
+
+    def fnf(self):
+        # Topo sort first to find the first block of FNF.
+        
+
+        # BFS and merge layers to form all FNF blocks.
+        pass
+
