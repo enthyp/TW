@@ -59,7 +59,7 @@ class Foata(Task):
 class Graph(Task):
     def run(self):
         graph = MinDependenceGraph(self.word, self.system)
-        graph.render('graph_{}'.format(self.word), show=True)
+        graph.render('out/graph_{}'.format(self.word), show=True)
       
 class FNFFromGraph(Task):
     def run(self):
@@ -80,7 +80,7 @@ class Runner:
 
     def run(self, task_no):
         for id, config in enumerate(self.input_config):
-            t = self.tasks[task_no](id, config)
+            t = self.tasks[task_no](id + 1, config)
             t.run()
 
 

@@ -17,9 +17,10 @@ def get_graph(in_dir, in_file, word, from_ind):
     return graph
 
 @pytest.mark.parametrize('in_file, word, from_ind', inputs)
-def test_graph_render(in_dir, in_file, word, from_ind):
+def test_graph_render(test_dir, in_dir, in_file, word, from_ind):
     graph = get_graph(in_dir, in_file, word, from_ind)
-    graph.render('graph' + in_file, show=True)
+    path = os.path.join(test_dir, 'out', 'graph_{}'.format(word))
+    graph.render(path, show=True)
 
 
 @pytest.mark.parametrize('in_file, word, from_ind', inputs)

@@ -3,7 +3,10 @@ import pytest
 
 
 @pytest.fixture
-def in_dir():
-    root_dir = os.path.dirname(os.path.realpath(__file__))
-    return os.path.join(root_dir, 'in')
+def test_dir():
+    return os.path.dirname(os.path.realpath(__file__))
+
+@pytest.fixture
+def in_dir(test_dir):
+    return os.path.join(test_dir, 'in')
 
