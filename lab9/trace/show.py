@@ -5,7 +5,9 @@ from traces import System, MinDependenceGraph, trace, fnf
 
 package_dir = os.path.dirname(os.path.realpath(__file__))
 test_input = os.path.join(package_dir, 'tests', 'in')
-input_config = [  # should be in config file but come on
+
+# Should have a Config class, be read from config file but come on...
+input_config = [  
     {
         'system_source': 'system1.txt',
         'from_ind': True,
@@ -23,47 +25,64 @@ input_config = [  # should be in config file but come on
     }
 ]
 
-class Runner:
-    def __init__(self, input_config):
-        self.input_config = input_config
-        self.tasks = {
-            1: show_dependence,
-            2: show_trace,
-            3: show_foata,
-            4: show_graph,
-            5: show_fnf_from_graph
-        }
 
-    def run(self, task_no):
-        for n, config in enumerate(self.input_config):
-            system = self._system(config)
-
-            print('System {}:'.format(n + 1))
-            t = self.tasks[task_no]
-            t(system, config['word'])
-            print()
+class Task:
+    def __init__(self, id, config):
+        self.id = id
+        self.system = self._system(config)
+        self.word = config['word']
 
     def _system(self, config):
         input_path = os.path.join(test_input, config['system_source'])
         return System(input_path, config['from_ind'])
 
+    def _show(self, result):
+        print('System {}: '.format(self.id))
+        pprint(result)
+               
+    def run(self):
+        raise NotImplementedError
 
-def show_dependence(system, word):
-    pprint(system.dep_relation)
 
-def show_trace(system, word):
-    pprint(trace(word, system))
+class Dependence(Task):
+    def run(self):
+        self._show(self.system.dep_relation)
 
-def show_foata(system, word):
-    pprint(fnf(word, system))
+class Trace(Task):
+    def run(self):
+        self._show(trace(self.word, self.system))
 
-def show_graph(system, word):
-    graph = MinDependenceGraph(word, system)
-    graph.render('graph_' + word, show=True)
+class Foata(Task):
+    def run(self):
+        self._show(fnf(self.word, self.system))
 
-def show_fnf_from_graph(system, word):
-    graph = MinDependenceGraph(word, system)
-    pprint(graph.fnf())
+class Graph(Task):
+    def run(self):
+        graph = MinDependenceGraph(self.word, self.system)
+        graph.render('graph_{}'.format(self.word), show=True)
+      
+class FNFFromGraph(Task):
+    def run(self):
+     graph = MinDependenceGraph(self.word, self.system)
+     self._show(graph.fnf())
+
+  
+class Runner:
+    def __init__(self, input_config):
+        self.input_config = input_config
+        self.tasks = {
+            1: Dependence,
+            2: Trace,
+            3: Foata,
+            4: Graph,
+            5: FNFFromGraph
+        }
+
+    def run(self, task_no):
+        for id, config in enumerate(self.input_config):
+            t = self.tasks[task_no](id, config)
+            t.run()
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
