@@ -6,6 +6,8 @@ setup(
     packages=['traces'],
     install_requires=[
         'graphviz',
+    ],
+    tests_require=[
         'pytest'
     ]
 )

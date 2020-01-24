@@ -1,4 +1,4 @@
-from collections import defaultdict, deque
+from collections import deque
 from graphviz import Digraph
 
 
@@ -10,7 +10,7 @@ class Node:
 
     @property
     def id(self):   
-         return '{}{}'.format(self.label, self.identifier) 
+        return '{}{}'.format(self.label, self.identifier)
 
     @property
     def label(self):
@@ -113,4 +113,3 @@ class MinDependenceGraph:
      
         blocks = ['(' + ''.join(sorted(b)) + ')' for b in blocks if b]
         return ''.join(blocks)
-
